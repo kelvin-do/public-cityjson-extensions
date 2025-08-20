@@ -1,38 +1,21 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://raw.githubusercontent.com/kelvin-do/public-cityjson-extensions/main/thermalbridge_extension.json",
-  "title": "CityJSON Thermal Bridge Extension",
-  "description": "Extension for thermal bridge surfaces in CityJSON buildings",
-  "type": "object",
-  "allOf": [
-    {
-      "$ref": "https://www.cityjson.org/schemas/2.0.1/cityjson.schema.json"
-    }
-  ],
-  "properties": {
-    "extraSemanticSurfaces": {
+  "type": "CityJSONExtension",
+  "versionCityJSON": "2.0",
+  "version": "1.0.0",
+  "name": "ThermalBridge",
+  "extraAttributes": {},
+  "extraCityObjects": {},
+  "extraRootProperties": {},
+  "extraSemanticSurfaces": {
+    "+ThermalBridge": {
       "type": "object",
       "properties": {
-        "+ThermalBridge": {
-          "type": "object",
-          "description": "Thermal bridge surface for energy analysis and thermal performance evaluation",
-          "properties": {
-            "type": {
-              "enum": ["+ThermalBridge"]
-            },
-            "associated_surfaces": {
-              "type": "string",
-              "description": "Tuple of associated surface IDs that form the thermal bridge"
-            },
-            "thermal_bridge_type": {
-              "type": "string",
-              "description": "Type of thermal bridge (e.g., 'GroundSurface_to_WallSurface', 'RoofSurface_to_WallSurface')"
-            }
-          },
-          "required": ["type", "associated_surfaces", "thermal_bridge_type"],
-          "additionalProperties": false
-        }
-      }
+        "type": { "enum": [ "+ThermalBridge" ] },
+        "associated_surfaces": {"type": "string"},
+        "thermal_bridge_type": {"type": "string"}
+      },
+      "required": [ "type", "associated_surfaces", "thermal_bridge_type" ],
+      "additionalProperties": false
     }
   }
 }
