@@ -20,21 +20,16 @@
             "type": {
               "enum": ["+ThermalBridge"]
             },
-            "subtype": {
+            "associated_surfaces": {
               "type": "string",
-              "description": "Subtype of thermal bridge (e.g., 'wall-floor', 'wall-roof', 'corner')"
+              "description": "Tuple of associated surface IDs that form the thermal bridge"
             },
-            "thermalConductivity": {
-              "type": "number",
-              "description": "Thermal conductivity value of the thermal bridge"
-            },
-            "uom": {
+            "thermal_bridge_type": {
               "type": "string",
-              "enum": ["W/mK", "W/m²K"],
-              "description": "Unit of measurement for thermal conductivity"
+              "description": "Type of thermal bridge (e.g., 'GroundSurface_to_WallSurface', 'RoofSurface_to_WallSurface')"
             }
           },
-          "required": ["type"],
+          "required": ["type", "associated_surfaces", "thermal_bridge_type"],
           "additionalProperties": false
         }
       }
