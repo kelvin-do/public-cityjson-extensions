@@ -1,14 +1,43 @@
 {
-    "type": "object",
-    "properties": {
-      "additionalSemanticSurfaces": {
-        "type": "object",
-        "properties": {
-          "+ThermalBridge": {
-            "type": "object",
-            "description": "Thermal bridge surface for energy analysis and thermal performance evaluation"
-          }
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/kelvin-do/public-cityjson-extensions/main/thermalbridge_extension.json",
+  "title": "CityJSON Thermal Bridge Extension",
+  "description": "Extension for thermal bridge surfaces in CityJSON buildings",
+  "type": "object",
+  "allOf": [
+    {
+      "$ref": "https://www.cityjson.org/schemas/2.0.1/cityjson.schema.json"
+    }
+  ],
+  "properties": {
+    "extraSemanticSurfaces": {
+      "type": "object",
+      "properties": {
+        "+ThermalBridge": {
+          "type": "object",
+          "description": "Thermal bridge surface for energy analysis and thermal performance evaluation",
+          "properties": {
+            "type": {
+              "enum": ["+ThermalBridge"]
+            },
+            "subtype": {
+              "type": "string",
+              "description": "Subtype of thermal bridge (e.g., 'wall-floor', 'wall-roof', 'corner')"
+            },
+            "thermalConductivity": {
+              "type": "number",
+              "description": "Thermal conductivity value of the thermal bridge"
+            },
+            "uom": {
+              "type": "string",
+              "enum": ["W/mK", "W/m²K"],
+              "description": "Unit of measurement for thermal conductivity"
+            }
+          },
+          "required": ["type"],
+          "additionalProperties": false
         }
       }
     }
   }
+}
