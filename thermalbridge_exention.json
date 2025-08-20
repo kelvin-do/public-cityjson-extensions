@@ -1,0 +1,14 @@
+{
+    "type": "object",
+    "properties": {
+      "additionalSemanticSurfaces": {
+        "type": "object",
+        "properties": {
+          "+ThermalBridge": {
+            "type": "object",
+            "description": "Thermal bridge surface for energy analysis and thermal performance evaluation"
+          }
+        }
+      }
+    }
+  }
