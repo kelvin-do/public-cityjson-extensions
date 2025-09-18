@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .selected {
+            border: 4px solid #dc3545 !important;
+            border-radius: 8px;
+        }
+        img {
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Click Functionality</h1>
+    <img id="test1" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzAwN2JmZiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTVDwvdGV4dD48L3N2Zz4=" 
+         onclick="toggleSelection('test1')" alt="Test Image 1">
+    
+    <img id="test2" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzI4YTc0NSIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTVDwvdGV4dD48L3N2Zz4=" 
+         onclick="toggleSelection('test2')" alt="Test Image 2">
+
+    <script>
+        function toggleSelection(imageId) {
+            console.log('toggleSelection called with:', imageId);
+            const img = document.getElementById(imageId);
+            const isSelected = img.classList.contains('selected');
+            
+            if (isSelected) {
+                img.classList.remove('selected');
+                console.log('Removed selection from:', imageId);
+            } else {
+                img.classList.add('selected');
+                console.log('Added selection to:', imageId);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .selected {
+            border: 4px solid #dc3545 !important;
+            border-radius: 8px;
+        }
+        img {
+            cursor: pointer;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Simple Test</h1>
+    <img id="img_google_earth_images_1_A_png" 
+         src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzAwN2JmZiIvPjx0ZXh0IHg9IjUwIiB5PSI1NSIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE0IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+VEVTVDwvdGV4dD48L3N2Zz4=" 
+         onclick="toggleSelection('img_google_earth_images_1_A_png')" alt="Test Image">
+
+    <script>
+        function toggleSelection(imageId) {
+            console.log('toggleSelection called with:', imageId);
+            const img = document.getElementById(imageId);
+            const isSelected = img.classList.contains('selected');
+            
+            if (isSelected) {
+                img.classList.remove('selected');
+                console.log('Removed selection from:', imageId);
+            } else {
+                img.classList.add('selected');
+                console.log('Added selection to:', imageId);
+            }
+        }
+    </script>
+</body>
+</html>

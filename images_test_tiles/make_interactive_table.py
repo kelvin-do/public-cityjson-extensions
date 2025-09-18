@@ -164,6 +164,13 @@ def create_interactive_image_table(base_folder, output_html):
                 z-index: 10;
             }}
             
+            .row-number-col {{
+                width: 50px;
+                background-color: #f8f9fa;
+                text-align: center;
+                font-weight: bold;
+            }}
+            
             .image-name-col {{
                 width: 300px;
                 background-color: #f8f9fa;
@@ -235,6 +242,15 @@ def create_interactive_image_table(base_folder, output_html):
                 text-align: center;
                 padding: 10px;
             }}
+            
+            .column-number-header {{
+                font-size: 12px;
+                font-weight: bold;
+                text-align: center;
+                padding: 5px;
+                background-color: #e9ecef;
+                color: #495057;
+            }}
         </style>
     </head>
     <body>
@@ -242,6 +258,15 @@ def create_interactive_image_table(base_folder, output_html):
         <div class="table-container">
             <table>
                 <thead>
+                    <tr>
+                        <th class="image-name-header">Image Name</th>
+    """
+    
+    # Add column numbers row
+    for col_number in range(1, len(folders) + 1):
+        html_content += f'                        <th class="column-number-header">{col_number}</th>\n'
+    
+    html_content += """                    </tr>
                     <tr>
                         <th class="image-name-header">Image Name</th>
     """

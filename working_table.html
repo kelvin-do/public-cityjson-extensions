@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working Image Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .selected {
+            border: 4px solid #dc3545 !important;
+            border-radius: 8px;
+            box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
+        }
+        img {
+            cursor: pointer;
+            margin: 5px;
+            max-width: 150px;
+            max-height: 150px;
+        }
+        .instruction {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Working Image Selection Table</h1>
+    <div id="instruction" class="instruction">
+        Click any image to select it. Then run the command shown below to make it visible to everyone.
+    </div>
+    
+    <table border="1">
+        <tr>
+            <th>Image</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td><img id="img_google_earth_images_1_A_png" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzAwN2JmZiIvPjx0ZXh0IHg9Ijc1IiB5PSI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MSBBPC90ZXh0Pjwvc3ZnPg==" onclick="toggleSelection('img_google_earth_images_1_A_png')" alt="1_A"></td>
+            <td><button onclick="runCommand('img_google_earth_images_1_A_png')">Update Selection</button></td>
+        </tr>
+        <tr>
+            <td><img id="img_google_earth_images_2_A_png" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgZmlsbD0iIzI4YTc0NSIvPjx0ZXh0IHg9Ijc1IiB5PSI4MCIgZm9udC1mYW1pbHk9IkFyaWFsIiBmb250LXNpemU9IjE4IiBmaWxsPSJ3aGl0ZSIgdGV4dC1hbmNob3I9Im1pZGRsZSI+MiBBPC90ZXh0Pjwvc3ZnPg==" onclick="toggleSelection('img_google_earth_images_2_A_png')" alt="2_A"></td>
+            <td><button onclick="runCommand('img_google_earth_images_2_A_png')">Update Selection</button></td>
+        </tr>
+    </table>
+
+    <script>
+        function toggleSelection(imageId) {
+            const img = document.getElementById(imageId);
+            const isSelected = img.classList.contains('selected');
+            
+            if (isSelected) {
+                img.classList.remove('selected');
+            } else {
+                img.classList.add('selected');
+            }
+            
+            updateInstruction(imageId, !isSelected);
+        }
+        
+        function updateInstruction(imageId, selected) {
+            const instruction = document.getElementById('instruction');
+            instruction.innerHTML = `
+                <strong>Selection Updated!</strong><br>
+                To make this visible to everyone, run:<br>
+                <code>python update_selections.py ${imageId} ${selected}</code>
+            `;
+        }
+        
+        function runCommand(imageId) {
+            const img = document.getElementById(imageId);
+            const isSelected = img.classList.contains('selected');
+            const command = `python update_selections.py ${imageId} ${isSelected}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(command).then(() => {
+                alert(`Command copied to clipboard: ${command}`);
+            });
+        }
+        
+        // Load existing selections
+        async function loadSelections() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/kelvin-do/public-cityjson-extensions/main/selections.json');
+                const data = await response.json();
+                
+                Object.keys(data).forEach(imageId => {
+                    const img = document.getElementById(imageId);
+                    if (img && data[imageId]) {
+                        img.classList.add('selected');
+                    }
+                });
+            } catch (error) {
+                console.log('Could not load selections from GitHub');
+            }
+        }
+        
+        // Load selections when page loads
+        loadSelections();
+    </script>
+</body>
+</html>
