@@ -3,12 +3,30 @@ import pandas as pd
 from PIL import Image
 import base64
 from io import BytesIO
+import json
 
-def create_interactive_image_table(base_folder, output_html):
+def load_selections(selections_file):
+    """
+    Load selected image IDs from a JSON file.
+    """
+    try:
+        if os.path.exists(selections_file):
+            with open(selections_file, 'r') as f:
+                data = json.load(f)
+                return set(data.get('selected_images', []))
+        else:
+            return set()
+    except Exception as e:
+        print(f"Warning: Could not load selections from {selections_file}: {e}")
+        return set()
+
+def create_interactive_image_table(base_folder, output_html, selected_images=None):
     """
     Create an interactive HTML table with hover tooltips showing bigger images.
     Same layout as the PDF version but with interactive hover effects.
     """
+    if selected_images is None:
+        selected_images = set()
     
     # Load Excel data
     excel_path = r"C:\Users\Leandre\Github\LOD2\Adresses_de_test.xlsx"
@@ -363,13 +381,19 @@ def create_interactive_image_table(base_folder, output_html):
                 }
             }
             
-            // Function to restore selections from localStorage
+            // Pre-selected images from repository
+            const preSelectedImages = {selected_images_json};
+            
+            // Function to restore selections from localStorage and pre-selected images
             function restoreSelections() {
                 const images = document.querySelectorAll('img[id^="img_"]');
                 images.forEach(img => {
                     const imageId = img.id;
-                    if (localStorage.getItem(imageId) === 'selected') {
+                    // Check localStorage first, then pre-selected images
+                    if (localStorage.getItem(imageId) === 'selected' || preSelectedImages[imageId]) {
                         img.classList.add('selected');
+                        // Also store in localStorage for consistency
+                        localStorage.setItem(imageId, 'selected');
                     }
                 });
             }
@@ -393,6 +417,11 @@ def create_interactive_image_table(base_folder, output_html):
     </body>
     </html>
     """
+    
+    # Replace placeholder with actual selected images JSON
+    selected_images_dict = {image_id: True for image_id in selected_images}
+    selected_images_json = json.dumps(selected_images_dict)
+    html_content = html_content.replace('{selected_images_json}', selected_images_json)
     
     # Write HTML file
     with open(output_html, 'w', encoding='utf-8') as f:
@@ -436,4 +465,9 @@ if __name__ == "__main__":
     print(f"Base folder: {base_folder}")
     print(f"Output file: {output_html}")
     
-    create_interactive_image_table(base_folder, output_html)
+    # Load selections from file
+    selections_file = os.path.join(os.path.dirname(output_html), "selections.json")
+    selected_images = load_selections(selections_file)
+    print(f"Loaded {len(selected_images)} selected images from {selections_file}")
+    
+    create_interactive_image_table(base_folder, output_html, selected_images)

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Selections for Repository</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 1000px;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+            overflow-x: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .copy-btn {
+            background: #28a745;
+        }
+        .copy-btn:hover {
+            background: #1e7e34;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Extract Selections for Repository</h1>
+        <p>This will help you get the selected image IDs so you can add them to your repository.</p>
+        
+        <button onclick="extractSelections()">Extract Current Selections</button>
+        <button class="copy-btn" onclick="copyToClipboard()">Copy to Clipboard</button>
+        
+        <div id="output"></div>
+    </div>
+
+    <script>
+        function extractSelections() {
+            const selectedImages = [];
+            
+            // Check localStorage for all image selections
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('img_') && localStorage.getItem(key) === 'selected') {
+                    selectedImages.push(key);
+                }
+            }
+            
+            const outputDiv = document.getElementById('output');
+            
+            if (selectedImages.length === 0) {
+                outputDiv.innerHTML = '<p>No images are currently selected.</p>';
+                return;
+            }
+            
+            // Create JSON format
+            const selectionsJson = {};
+            selectedImages.forEach(imageId => {
+                selectionsJson[imageId] = true;
+            });
+            
+            const jsonString = JSON.stringify(selectionsJson, null, 2);
+            
+            // Create Python list format
+            const pythonList = selectedImages.map(id => `"${id}"`).join(',\n    ');
+            const pythonString = `selected_images = [
+    ${pythonList}
+]`;
+            
+            // Create JavaScript array format
+            const jsArray = selectedImages.map(id => `"${id}"`).join(',\n    ');
+            const jsString = `const selectedImages = [
+    ${jsArray}
+];`;
+            
+            outputDiv.innerHTML = `
+                <h3>Found ${selectedImages.length} selected images:</h3>
+                
+                <h4>JSON Format (for selections.json):</h4>
+                <div class="code-block" id="json-output">${jsonString}</div>
+                
+                <h4>Python List Format:</h4>
+                <div class="code-block" id="python-output">${pythonString}</div>
+                
+                <h4>JavaScript Array Format:</h4>
+                <div class="code-block" id="js-output">${jsString}</div>
+                
+                <h4>Raw Image IDs (one per line):</h4>
+                <div class="code-block" id="raw-output">${selectedImages.join('\n')}</div>
+            `;
+        }
+        
+        function copyToClipboard() {
+            const jsonOutput = document.getElementById('json-output');
+            if (jsonOutput) {
+                navigator.clipboard.writeText(jsonOutput.textContent).then(() => {
+                    alert('JSON copied to clipboard!');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

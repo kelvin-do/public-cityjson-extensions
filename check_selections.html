@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check Current Selections</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 800px;
+        }
+        .selection-item {
+            background: #e8f5e8;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+        }
+        .no-selections {
+            color: #666;
+            font-style: italic;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        .clear-btn {
+            background: #f44336;
+        }
+        .clear-btn:hover {
+            background: #da190b;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Current Image Selections</h1>
+        <p>This page shows which images are currently selected in your localStorage.</p>
+        
+        <button onclick="checkSelections()">Refresh Selections</button>
+        <button class="clear-btn" onclick="clearAllSelections()">Clear All Selections</button>
+        
+        <div id="selections"></div>
+    </div>
+
+    <script>
+        function checkSelections() {
+            const selectionsDiv = document.getElementById('selections');
+            const selectedImages = [];
+            
+            // Check localStorage for all image selections
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                if (key && key.startsWith('img_') && localStorage.getItem(key) === 'selected') {
+                    selectedImages.push(key);
+                }
+            }
+            
+            if (selectedImages.length === 0) {
+                selectionsDiv.innerHTML = '<div class="no-selections">No images are currently selected.</div>';
+            } else {
+                let html = `<h3>Selected Images (${selectedImages.length}):</h3>`;
+                selectedImages.forEach(imageId => {
+                    // Extract readable info from image ID
+                    const readableName = imageId.replace('img_', '').replace(/_/g, ' ').replace('.png', '');
+                    html += `<div class="selection-item">${imageId}<br><small>${readableName}</small></div>`;
+                });
+                selectionsDiv.innerHTML = html;
+            }
+        }
+        
+        function clearAllSelections() {
+            if (confirm('Are you sure you want to clear all selections?')) {
+                const selectedImages = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith('img_') && localStorage.getItem(key) === 'selected') {
+                        selectedImages.push(key);
+                    }
+                }
+                
+                selectedImages.forEach(imageId => {
+                    localStorage.removeItem(imageId);
+                });
+                
+                alert(`Cleared ${selectedImages.length} selections.`);
+                checkSelections();
+            }
+        }
+        
+        // Check selections when page loads
+        checkSelections();
+    </script>
+</body>
+</html>
