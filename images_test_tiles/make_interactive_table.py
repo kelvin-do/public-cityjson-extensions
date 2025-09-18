@@ -192,6 +192,21 @@ def create_interactive_image_table(base_folder, output_html):
                 border-radius: 8px;
             }}
             
+            .image-cell img.selected {{
+                border: 4px solid #dc3545 !important;
+                border-radius: 8px;
+                box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
+            }}
+            
+            .image-cell img.selected:hover {{
+                border: 4px solid #dc3545 !important;
+                transform: scale(3);
+                z-index: 1000;
+                position: relative;
+                box-shadow: 0 8px 24px rgba(220, 53, 69, 0.5);
+                border-radius: 8px;
+            }}
+            
             
             .manual-change {{
                 background-color: #fff3cd !important;
@@ -286,9 +301,13 @@ def create_interactive_image_table(base_folder, output_html):
                 img_small = image_to_base64(image_path, (200, 200))
                 
                 if img_small:
-                    html_content += f'''                            <img src="{img_small}" 
+                    # Create unique ID for each image
+                    image_id = f"img_{folder_name}_{image_name.replace('.', '_')}"
+                    html_content += f'''                            <img id="{image_id}" 
+                                 src="{img_small}" 
                                  style="max-width: 200px; max-height: 150px; object-fit: contain;"
-                                 alt="{image_name}">\n'''
+                                 alt="{image_name}"
+                                 onclick="toggleSelection('{image_id}')">\n'''
                 else:
                     html_content += f'                            <div>Error loading image</div>\n'
             else:
@@ -302,6 +321,50 @@ def create_interactive_image_table(base_folder, output_html):
             </table>
         </div>
         
+        <script>
+            // Function to toggle image selection
+            function toggleSelection(imageId) {
+                const img = document.getElementById(imageId);
+                const isSelected = img.classList.contains('selected');
+                
+                if (isSelected) {
+                    // Remove selection
+                    img.classList.remove('selected');
+                    localStorage.removeItem(imageId);
+                } else {
+                    // Add selection
+                    img.classList.add('selected');
+                    localStorage.setItem(imageId, 'selected');
+                }
+            }
+            
+            // Function to restore selections from localStorage
+            function restoreSelections() {
+                const images = document.querySelectorAll('img[id^="img_"]');
+                images.forEach(img => {
+                    const imageId = img.id;
+                    if (localStorage.getItem(imageId) === 'selected') {
+                        img.classList.add('selected');
+                    }
+                });
+            }
+            
+            // Restore selections when page loads
+            document.addEventListener('DOMContentLoaded', restoreSelections);
+            
+            // Optional: Add keyboard shortcut to clear all selections (Ctrl+Shift+C)
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                    const selectedImages = document.querySelectorAll('img.selected');
+                    selectedImages.forEach(img => {
+                        img.classList.remove('selected');
+                        localStorage.removeItem(img.id);
+                    });
+                    console.log('All selections cleared');
+                }
+            });
+        </script>
+        
     </body>
     </html>
     """
@@ -314,13 +377,38 @@ def create_interactive_image_table(base_folder, output_html):
     print(f"Found {len(folders)} folders and {len(image_names)} images")
 
 if __name__ == "__main__":
-    base_folder = "."
-    output_html = "interactive_image_table.html"
+    # Get the directory where this script is located
+    script_dir = os.path.dirname(os.path.abspath(__file__))
     
-    if not os.path.exists("google_earth_images"):
-        print("Error: Please run this script from the images_test_tiles directory")
-        print("Current directory:", os.getcwd())
+    # Check if we're in the images_test_tiles directory or need to navigate to it
+    if os.path.basename(script_dir) == "images_test_tiles":
+        base_folder = script_dir
+        # Output to parent directory (project root)
+        output_html = os.path.join(os.path.dirname(script_dir), "interactive_image_table.html")
+    else:
+        # Try to find images_test_tiles folder relative to script location
+        images_test_tiles_path = os.path.join(script_dir, "images_test_tiles")
+        if os.path.exists(images_test_tiles_path):
+            base_folder = images_test_tiles_path
+            # Output to project root (script_dir)
+            output_html = os.path.join(script_dir, "interactive_image_table.html")
+        else:
+            print("Error: Cannot find images_test_tiles directory")
+            print("Script location:", script_dir)
+            print("Expected to find 'images_test_tiles' folder here or in parent directory")
+            exit(1)
+    
+    # Verify google_earth_images exists
+    google_earth_path = os.path.join(base_folder, "google_earth_images")
+    if not os.path.exists(google_earth_path):
+        print("Error: Cannot find 'google_earth_images' folder")
+        print("Base folder:", base_folder)
         print("Expected to find 'google_earth_images' folder here")
         exit(1)
+    
+    print(f"Running from: {os.getcwd()}")
+    print(f"Script location: {script_dir}")
+    print(f"Base folder: {base_folder}")
+    print(f"Output file: {output_html}")
     
     create_interactive_image_table(base_folder, output_html)
