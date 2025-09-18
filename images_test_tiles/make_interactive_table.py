@@ -68,7 +68,7 @@ def create_interactive_image_table(base_folder, output_html):
             return folder_name
     
     # Convert images to base64 (both small and large versions)
-    def image_to_base64(image_path, max_size=(200, 200)):
+    def image_to_base64(image_path, max_size=(800, 800)):
         try:
             img = Image.open(image_path)
             
@@ -93,7 +93,7 @@ def create_interactive_image_table(base_folder, output_html):
         except Exception as e:
             return None
     
-    def image_to_base64_tooltip(image_path, max_size=(400, 400)):
+    def image_to_base64_tooltip(image_path, max_size=(1200, 1200)):
         try:
             img = Image.open(image_path)
             
@@ -179,8 +179,8 @@ def create_interactive_image_table(base_folder, output_html):
             .image-cell {{
                 text-align: center;
                 position: relative;
-                width: 200px;
-                height: 150px;
+                width: 400px;
+                height: 300px;
             }}
             
             .image-cell img {{
@@ -323,14 +323,14 @@ def create_interactive_image_table(base_folder, output_html):
             
             if os.path.exists(image_path):
                 # Convert small image to base64
-                img_small = image_to_base64(image_path, (200, 200))
+                img_small = image_to_base64(image_path, (800, 800))
                 
                 if img_small:
                     # Create unique ID for each image
                     image_id = f"img_{folder_name}_{image_name.replace('.', '_')}"
                     html_content += f'''                            <img id="{image_id}" 
                                  src="{img_small}" 
-                                 style="max-width: 200px; max-height: 150px; object-fit: contain;"
+                                 style="max-width: 400px; max-height: 300px; object-fit: contain;"
                                  alt="{image_name}"
                                  onclick="toggleSelection('{image_id}')">\n'''
                 else:
